@@ -8,4 +8,5 @@
 struct ElementKind {
     static let badge = "badge-element-kind"
     static let title = "title-element-kind"
+    static let header = "header-element-kind"
 }
