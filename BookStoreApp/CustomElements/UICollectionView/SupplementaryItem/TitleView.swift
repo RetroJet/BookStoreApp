@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TitleView: UICollectionReusableView {
+final class TitleView: UICollectionReusableView {
     static let reuseIdentifier = "TitleSupplementaryView"
     
     private let textLabel = UILabel()
