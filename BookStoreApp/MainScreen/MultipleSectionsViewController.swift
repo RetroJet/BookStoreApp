@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MultipleSectionsViewController: UIViewController {
+final class MultipleSectionsViewController: UIViewController {
     private var collectionView: UICollectionView!
     
     private let reuseIdentifier = "reuseIdentifier"
@@ -78,11 +78,17 @@ private extension MultipleSectionsViewController {
         return header
     }
     
-    func createTopSection() -> NSCollectionLayoutSection {
+    func createSize(
+        itemWidth: NSCollectionLayoutDimension,
+        itemsHeight: NSCollectionLayoutDimension,
+        groupWidth: NSCollectionLayoutDimension,
+        groupHeight: NSCollectionLayoutDimension,
+        scrollingBehavior: UICollectionLayoutSectionOrthogonalScrollingBehavior
+    ) -> NSCollectionLayoutSection {
         //Item
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .absolute(100),
-            heightDimension: .absolute(100)
+            widthDimension: itemWidth,
+            heightDimension: itemsHeight
         )
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -90,8 +96,8 @@ private extension MultipleSectionsViewController {
         
         //Group
         let groupSize = NSCollectionLayoutSize(
-            widthDimension: .estimated(1),
-            heightDimension: .estimated(1)
+            widthDimension: groupWidth,
+            heightDimension: groupHeight
         )
         
         let group = NSCollectionLayoutGroup.horizontal(
@@ -101,65 +107,37 @@ private extension MultipleSectionsViewController {
         
         //Section
         let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .continuous
-        section.boundarySupplementaryItems = [createHeader()]
+            section.orthogonalScrollingBehavior = scrollingBehavior
+            section.boundarySupplementaryItems = [createHeader()]
+        
         return section
+    }
+    
+    func createTopSection() -> NSCollectionLayoutSection {
+        createSize(
+            itemWidth: .absolute(100),
+            itemsHeight: .absolute(100),
+            groupWidth: .estimated(1),
+            groupHeight: .estimated(1),
+            scrollingBehavior: .continuous)
     }
     
     func createMiddleSection() -> NSCollectionLayoutSection{
-        //Item
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .absolute(150),
-            heightDimension: .absolute(190)
-        )
-        
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
-        
-        //Group
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .estimated(1),
-            heightDimension: .estimated(1)
-        )
-        
-        let group = NSCollectionLayoutGroup.horizontal(
-            layoutSize: groupSize,
-            subitems: [item]
-        )
-        
-        //Section
-        let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .continuous
-        section.boundarySupplementaryItems = [createHeader()]
-        return section
+        createSize(
+            itemWidth: .absolute(150),
+            itemsHeight: .absolute(190),
+            groupWidth: .estimated(1),
+            groupHeight: .estimated(1),
+            scrollingBehavior: .continuous)
     }
     
     func createBottomSection() -> NSCollectionLayoutSection {
-        //Item
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1),
-            heightDimension: .fractionalHeight(1)
-        )
-        
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
-        
-        //Group
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1),
-            heightDimension: .absolute(350)
-        )
-        
-        let group = NSCollectionLayoutGroup.horizontal(
-            layoutSize: groupSize,
-            subitems: [item]
-        )
-        
-        //Section
-        let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .continuous
-        section.boundarySupplementaryItems = [createHeader()]
-        return section
+        createSize(
+            itemWidth: .fractionalWidth(1),
+            itemsHeight: .fractionalHeight(1),
+            groupWidth: .fractionalWidth(1),
+            groupHeight: .absolute(350),
+            scrollingBehavior: .continuous)
     }
 }
 
@@ -193,7 +171,6 @@ extension MultipleSectionsViewController: UICollectionViewDataSource {
         cell.backgroundColor = colors[indexPath.section % colors.count]
         
         if indexPath.section == 0 {
-            cell.layer.cornerRadius = 10
             cell.layer.cornerRadius = cell.frame.width / 2
         } else {
             cell.layer.cornerRadius = 10

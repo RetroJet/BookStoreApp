@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HorizontalScrollCell: UICollectionViewCell {
+final class HorizontalScrollCell: UICollectionViewCell {
     private let imageCell = UIImageView()
     
     override init(frame: CGRect) {

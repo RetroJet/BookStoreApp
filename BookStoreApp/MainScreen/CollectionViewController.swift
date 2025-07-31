@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CollectionViewController: UIViewController {
+final class CollectionViewController: UIViewController {
     var bookRepository: BookRepository!
     
     private var collectionView: UICollectionView!
