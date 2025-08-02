@@ -78,17 +78,11 @@ private extension MultipleSectionsViewController {
         return header
     }
     
-    func createSize(
-        itemWidth: NSCollectionLayoutDimension,
-        itemsHeight: NSCollectionLayoutDimension,
-        groupWidth: NSCollectionLayoutDimension,
-        groupHeight: NSCollectionLayoutDimension,
-        scrollingBehavior: UICollectionLayoutSectionOrthogonalScrollingBehavior
-    ) -> NSCollectionLayoutSection {
+    func createSize(with params: SectionLayoutParameterss) -> NSCollectionLayoutSection {
         //Item
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: itemWidth,
-            heightDimension: itemsHeight
+            widthDimension: params.itemWidth,
+            heightDimension: params.itemHeight
         )
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -96,8 +90,8 @@ private extension MultipleSectionsViewController {
         
         //Group
         let groupSize = NSCollectionLayoutSize(
-            widthDimension: groupWidth,
-            heightDimension: groupHeight
+            widthDimension: params.groupWidth,
+            heightDimension: params.groupHeight
         )
         
         let group = NSCollectionLayoutGroup.horizontal(
@@ -107,37 +101,45 @@ private extension MultipleSectionsViewController {
         
         //Section
         let section = NSCollectionLayoutSection(group: group)
-            section.orthogonalScrollingBehavior = scrollingBehavior
-            section.boundarySupplementaryItems = [createHeader()]
+        section.orthogonalScrollingBehavior = .continuous
+        section.boundarySupplementaryItems = [createHeader()]
         
         return section
     }
     
     func createTopSection() -> NSCollectionLayoutSection {
-        createSize(
+        let params = SectionLayoutParameterss(
             itemWidth: .absolute(100),
-            itemsHeight: .absolute(100),
+            itemHeight: .absolute(100),
+            
             groupWidth: .estimated(1),
             groupHeight: .estimated(1),
-            scrollingBehavior: .continuous)
+        )
+        
+        return createSize(with: params)
     }
     
     func createMiddleSection() -> NSCollectionLayoutSection{
-        createSize(
+        let params = SectionLayoutParameterss(
             itemWidth: .absolute(150),
-            itemsHeight: .absolute(190),
+            itemHeight: .absolute(190),
+            
             groupWidth: .estimated(1),
             groupHeight: .estimated(1),
-            scrollingBehavior: .continuous)
+        )
+        
+        return createSize(with: params)
     }
     
     func createBottomSection() -> NSCollectionLayoutSection {
-        createSize(
+        let params = SectionLayoutParameterss(
             itemWidth: .fractionalWidth(1),
-            itemsHeight: .fractionalHeight(1),
+            itemHeight: .fractionalHeight(1),
             groupWidth: .fractionalWidth(1),
-            groupHeight: .absolute(350),
-            scrollingBehavior: .continuous)
+            groupHeight: .absolute(350)
+        )
+        
+        return createSize(with: params)
     }
 }
 

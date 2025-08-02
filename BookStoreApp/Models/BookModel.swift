@@ -15,3 +15,4 @@ struct Book {
     let title: String
     var isNew = false
 }
+
