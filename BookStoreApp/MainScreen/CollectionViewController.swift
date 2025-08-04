@@ -1,16 +1,10 @@
-//
-//  ViewController.swift
-//  BookStoreApp
-//
-//  Created by Nazar on 24.07.2025.
-//
-
 import UIKit
 
-final class CollectionViewController: UIViewController {
+class CollectionViewController: UIViewController {
     var bookRepository: BookRepository!
     
     private var collectionView: UICollectionView!
+    private var diffbleDataSource: UICollectionViewDiffableDataSource<BookType, Book>!
     
     private let reuseIdentifier = "reuseIdentifier"
     
@@ -25,6 +19,8 @@ private extension CollectionViewController {
     func setup() {
         setupCollectionView()
         setupView()
+        configureDataSource()
+        applyInitialData()
         setupLayout()
     }
     
@@ -58,7 +54,6 @@ private extension CollectionViewController {
         )
         
         collectionView.backgroundColor = UIColor(red: 18/255, green: 18/255, blue: 18/255, alpha: 1)
-        collectionView.dataSource = self
     }
 }
 
@@ -184,73 +179,80 @@ private extension CollectionViewController {
     }
 }
 
-//MARK: -> UICollectionViewDataSource
-extension CollectionViewController: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        bookRepository.getBookTypes().count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        bookRepository.getBookTypes()[section].books.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? HorizontalScrollCell else {
-            return UICollectionViewCell()
-        }
-        
-        let book = bookRepository.getBookTypes()[indexPath.section].books[indexPath.item]
-        
-        cell.configure(with: book.image)
-        cell.layer.cornerRadius = 10
-        cell.clipsToBounds = true
-        return cell
-    }
-    
-    func collectionView(
-        _ collectionView: UICollectionView,
-        viewForSupplementaryElementOfKind kind: String,
-        at indexPath: IndexPath
-    ) -> UICollectionReusableView {
-        
-        if kind == UICollectionView.elementKindSectionHeader {
-            let header = collectionView.dequeueReusableSupplementaryView(
-                ofKind: kind,
-                withReuseIdentifier: SectionHeaderView.reuseIdentifier,
-                for: indexPath
-            ) as! SectionHeaderView
-            header.configure(
-                text: bookRepository.getBookTypes()[indexPath.section].type)
-            
-            return header
-            
-        } else if kind == ElementKind.badge {
-            let book = bookRepository.getBookTypes()[indexPath.section].books[indexPath.item]
-            let badge = collectionView.dequeueReusableSupplementaryView(
-                ofKind: kind,
-                withReuseIdentifier: BadgeView.reuseIdentifier,
-                for: indexPath
-            ) as! BadgeView
-            if book.isNew {
-                badge.isHidden = false
-                badge.configure(text: "Новинка")
-            } else {
-                badge.isHidden = true
+//MARK: -> UICollectionViewDiffableDataSource
+extension CollectionViewController {
+    func configureDataSource() {
+        diffbleDataSource = UICollectionViewDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: self.reuseIdentifier,
+                for: indexPath) as? HorizontalScrollCell else {
+                return UICollectionViewCell()
             }
             
-            return badge
+            let book = self.bookRepository.getBookTypes()[indexPath.section].books[indexPath.item]
             
-        } else if kind == ElementKind.title {
-            let titleView = collectionView.dequeueReusableSupplementaryView(
-                ofKind: kind,
-                withReuseIdentifier: TitleView.reuseIdentifier,
-                for: indexPath) as! TitleView
+            cell.configure(with: book.image)
+            cell.layer.cornerRadius = 10
+            cell.clipsToBounds = true
             
-            let book = bookRepository.getBookTypes()[indexPath.section].books[indexPath.item]
-            titleView.configure(text: book.title)
+            return cell
+        })
+        
+        diffbleDataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
             
-            return titleView
+            if kind == UICollectionView.elementKindSectionHeader {
+                let header = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: kind,
+                    withReuseIdentifier: SectionHeaderView.reuseIdentifier,
+                    for: indexPath
+                ) as! SectionHeaderView
+                header.configure(
+                    text: self.bookRepository.getBookTypes()[indexPath.section].type)
+                
+                return header
+                
+            } else if kind == ElementKind.badge {
+                let book = self.bookRepository.getBookTypes()[indexPath.section].books[indexPath.item]
+                let badge = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: kind,
+                    withReuseIdentifier: BadgeView.reuseIdentifier,
+                    for: indexPath
+                ) as! BadgeView
+                if book.isNew {
+                    badge.isHidden = false
+                    badge.configure(text: "Новинка")
+                } else {
+                    badge.isHidden = true
+                }
+                
+                return badge
+                
+            } else if kind == ElementKind.title {
+                let titleView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: kind,
+                    withReuseIdentifier: TitleView.reuseIdentifier,
+                    for: indexPath) as! TitleView
+                
+                let book = self.bookRepository.getBookTypes()[indexPath.section].books[indexPath.item]
+                titleView.configure(text: book.title)
+                
+                return titleView
+            }
+            return UICollectionReusableView()
         }
-        return UICollectionReusableView()
     }
-}
+    
+    func applyInitialData() {
+        var snapshot = NSDiffableDataSourceSnapshot<BookType, Book>()
+        
+        let sections = bookRepository.getBookTypes()
+            
+        for bookType in sections {
+            snapshot.appendSections([bookType])
+            snapshot.appendItems(bookType.books, toSection: bookType)
+        }
+        
+        diffbleDataSource.apply(snapshot, animatingDifferences: true)
+        
+        }
+    }
