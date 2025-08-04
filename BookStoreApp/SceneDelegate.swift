@@ -17,12 +17,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         let collectionViewController = CollectionViewController()
-        let multipleSectionsViewController = MultipleSectionsViewController()
+        _ = MultipleSectionsViewController()
         let bookRepository = BookRepository()
         
         collectionViewController.bookRepository = bookRepository
         
-        window?.rootViewController = multipleSectionsViewController
+        window?.rootViewController = collectionViewController
         window?.makeKeyAndVisible()
     }
 }

@@ -41,6 +41,7 @@ private extension SectionHeaderView {
     func setupLabel() {
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textAlignment = .left
+        label.textColor = .white
     }
 }
 
