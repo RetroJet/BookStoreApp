@@ -1,6 +1,6 @@
 import UIKit
 
-class CollectionViewController: UIViewController {
+final class CollectionViewController: UIViewController {
     var bookRepository: BookRepository!
     
     private var collectionView: UICollectionView!
@@ -12,6 +12,11 @@ class CollectionViewController: UIViewController {
         super.viewDidLoad()
         setup()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
 }
 
 //MARK: -> Setup View
@@ -19,6 +24,7 @@ private extension CollectionViewController {
     func setup() {
         setupCollectionView()
         setupView()
+        setupNavigationBar()
         configureDataSource()
         applyInitialData()
         setupLayout()
@@ -27,6 +33,31 @@ private extension CollectionViewController {
     func setupView() {
         view.addSubview(collectionView)
         view.backgroundColor = UIColor(red: 18/255, green: 18/255, blue: 18/255, alpha: 1)
+    }
+    
+    func setupNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(red: 18/255, green: 18/255, blue: 18/255, alpha: 1)
+        
+        appearance.largeTitleTextAttributes = [
+            .foregroundColor: UIColor.white,
+            .font: UIFont.systemFont(ofSize: 30, weight: .bold)
+        ]
+        
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.white
+        ]
+        
+        let backItem = UIBarButtonItem()
+        
+        backItem.title = "Назад"
+        navigationItem.backBarButtonItem = backItem
+        navigationItem.title = "Книги для души"
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
     func setupCollectionView() {
@@ -53,6 +84,7 @@ private extension CollectionViewController {
             withReuseIdentifier: BadgeView.reuseIdentifier
         )
         
+        collectionView.delegate = self
         collectionView.backgroundColor = UIColor(red: 18/255, green: 18/255, blue: 18/255, alpha: 1)
     }
 }
@@ -174,13 +206,24 @@ private extension CollectionViewController {
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 }
 
+//MARK: -> UICollectionViewDelegate
+extension CollectionViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let book = bookRepository.getBookTypes()[indexPath.section].books[indexPath.item]
+        
+        let detailsVC = DetailsViewController()
+        detailsVC.configure(book: book)
+        navigationController?.pushViewController(detailsVC, animated: true)
+    }
+}
+
 //MARK: -> UICollectionViewDiffableDataSource
-extension CollectionViewController {
+private extension CollectionViewController {
     func configureDataSource() {
         diffbleDataSource = UICollectionViewDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
             guard let cell = collectionView.dequeueReusableCell(
@@ -246,13 +289,12 @@ extension CollectionViewController {
         var snapshot = NSDiffableDataSourceSnapshot<BookType, Book>()
         
         let sections = bookRepository.getBookTypes()
-            
+        
         for bookType in sections {
             snapshot.appendSections([bookType])
             snapshot.appendItems(bookType.books, toSection: bookType)
         }
         
         diffbleDataSource.apply(snapshot, animatingDifferences: true)
-        
-        }
     }
+}

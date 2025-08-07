@@ -198,6 +198,4 @@ extension MultipleSectionsViewController: UICollectionViewDataSource {
         }
         return UICollectionReusableView()
     }
-    
-    
 }
