@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         collectionViewController.bookRepository = bookRepository
         
-        window?.rootViewController = collectionViewController
+        window?.rootViewController = UINavigationController(rootViewController: collectionViewController)
         window?.makeKeyAndVisible()
     }
 }

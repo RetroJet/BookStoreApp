@@ -39,7 +39,6 @@ private extension TitleView {
     }
     
     func setupLabel() {
-        textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.textColor = .white
         textLabel.font = .boldSystemFont(ofSize: 14)
         textLabel.numberOfLines = 2
