@@ -113,7 +113,7 @@ private extension MultipleSectionsViewController {
             itemHeight: .absolute(100),
             
             groupWidth: .estimated(1),
-            groupHeight: .estimated(1),
+            groupHeight: .estimated(1)
         )
         
         return createSize(with: params)
@@ -125,7 +125,7 @@ private extension MultipleSectionsViewController {
             itemHeight: .absolute(190),
             
             groupWidth: .estimated(1),
-            groupHeight: .estimated(1),
+            groupHeight: .estimated(1)
         )
         
         return createSize(with: params)
