@@ -1,12 +1,21 @@
 import UIKit
 
 final class CollectionViewController: UIViewController {
-    var bookRepository: BookRepository!
+    private let bookRepository: BookRepository
     
     private var collectionView: UICollectionView!
     private var diffbleDataSource: UICollectionViewDiffableDataSource<BookType, Book>!
     
     private let reuseIdentifier = "reuseIdentifier"
+    
+    init(bookRepository: BookRepository) {
+            self.bookRepository = bookRepository
+            super.init(nibName: nil, bundle: nil)
+        }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

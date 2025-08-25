@@ -16,13 +16,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-        let collectionViewController = CollectionViewController()
-        _ = MultipleSectionsViewController()
         let bookRepository = BookRepository()
         
-        collectionViewController.bookRepository = bookRepository
+        let tabBarController = TabBarController(bookRepository: bookRepository)
         
-        window?.rootViewController = UINavigationController(rootViewController: collectionViewController)
+        window?.rootViewController = UINavigationController(rootViewController: tabBarController)
         window?.makeKeyAndVisible()
     }
 }
