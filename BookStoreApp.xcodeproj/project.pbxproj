@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		784331D22E5B3480005EA1D6 /* Exceptions for "BookStoreApp" folder in "BookStoreApp" target */ = {
+		784331E82E5C7D66005EA1D6 /* Exceptions for "BookStoreApp" folder in "BookStoreApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resources/Info.plist,
@@ -24,7 +24,7 @@
 		781A14072E319BCC00DA4C59 /* BookStoreApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				784331D22E5B3480005EA1D6 /* Exceptions for "BookStoreApp" folder in "BookStoreApp" target */,
+				784331E82E5C7D66005EA1D6 /* Exceptions for "BookStoreApp" folder in "BookStoreApp" target */,
 			);
 			path = BookStoreApp;
 			sourceTree = "<group>";
