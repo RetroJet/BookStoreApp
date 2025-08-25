@@ -22,14 +22,41 @@ final class MultipleSectionsViewController: UIViewController {
 //MARK: -> Setup View
 private extension MultipleSectionsViewController {
     func setup() {
+        setupView()
+        setupNavigationBar()
         setupCollectionView()
         setupLayout()
+    }
+    
+    func setupView() {
+        view.backgroundColor = UIColor(red: 18/255, green: 18/255, blue: 18/255, alpha: 1)
+    }
+    
+    func setupNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(red: 18/255, green: 18/255, blue: 18/255, alpha: 1)
+        
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.white
+        ]
+        
+        
+        navigationItem.title = "Поиск"
+        
+        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
     func setupCollectionView() {
         let layout = createLayout()
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        
+        collectionView.backgroundColor = UIColor(red: 18/255, green: 18/255, blue: 18/255, alpha: 1)
+        
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
         collectionView.register(
@@ -179,23 +206,5 @@ extension MultipleSectionsViewController: UICollectionViewDataSource {
         }
         
         return cell
-    }
-    
-    func collectionView(
-        _ collectionView: UICollectionView,
-        viewForSupplementaryElementOfKind kind: String,
-        at indexPath: IndexPath)
-    -> UICollectionReusableView {
-        
-        if kind == ElementKind.header {
-            let header = collectionView.dequeueReusableSupplementaryView(
-                ofKind: kind,
-                withReuseIdentifier: SectionHeaderView.reuseIdentifier,
-                for: indexPath
-            ) as! SectionHeaderView
-            header.configure(text: "Section \(indexPath.section + 1)")
-            return header
-        }
-        return UICollectionReusableView()
     }
 }
