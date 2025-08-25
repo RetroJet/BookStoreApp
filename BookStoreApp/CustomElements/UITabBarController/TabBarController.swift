@@ -24,21 +24,12 @@ enum TabBarItem {
         case .search: return UIImage(systemName: "magnifyingglass")
         }
     }
+    
+    static let allTabBarItems = [home, search]
 }
 
 class TabBarController: UITabBarController {
-    private let bookRepository: BookRepository
-    
     private let dataSource: [TabBarItem] = [.home, .search]
-    
-    init(bookRepository: BookRepository) {
-            self.bookRepository = bookRepository
-            super.init(nibName: nil, bundle: nil)
-        }
-        
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +37,7 @@ class TabBarController: UITabBarController {
     }
 }
 
+//MARK: -> Settings View
 private extension TabBarController {
     func setup() {
         buildTabBarComponents()
@@ -53,16 +45,21 @@ private extension TabBarController {
     }
     
     func buildTabBarComponents() {
+        let bookManager: IBookManager = BookManager()
+        
+        if bookManager.isEmpty() {
+            let bookRepository = BookRepository()
+            let books = bookRepository.getBookTypes()
+            bookManager.addBooks(books)
+        }
+        
         viewControllers = dataSource.map {
             switch $0 {
             case .home:
-                return UINavigationController(
-                    rootViewController: CollectionViewController(bookRepository: bookRepository)
-                )
-                
+                let collectionVC = CollectionViewController(manager: bookManager)
+                return UINavigationController(rootViewController: collectionVC)
             case .search:
-                return UINavigationController(
-                    rootViewController: MultipleSectionsViewController()
+                return UINavigationController(rootViewController: MultipleSectionsViewController()
                 )
             }
         }

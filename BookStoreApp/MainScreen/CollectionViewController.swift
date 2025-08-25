@@ -1,17 +1,17 @@
 import UIKit
 
 final class CollectionViewController: UIViewController {
-    private let bookRepository: BookRepository
-    
     private var collectionView: UICollectionView!
     private var diffbleDataSource: UICollectionViewDiffableDataSource<BookType, Book>!
     
     private let reuseIdentifier = "reuseIdentifier"
     
-    init(bookRepository: BookRepository) {
-            self.bookRepository = bookRepository
-            super.init(nibName: nil, bundle: nil)
-        }
+    private let manager: IBookManager
+    
+    init(manager: IBookManager) {
+        self.manager = manager
+        super.init(nibName: nil, bundle: nil)
+    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -223,7 +223,7 @@ private extension CollectionViewController {
 //MARK: -> UICollectionViewDelegate
 extension CollectionViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let book = bookRepository.getBookTypes()[indexPath.section].books[indexPath.item]
+        let book = manager.getAllBooks()[indexPath.section].books[indexPath.item]
         
         let detailsVC = DetailsViewController()
         detailsVC.configure(book: book)
@@ -241,7 +241,7 @@ private extension CollectionViewController {
                 return UICollectionViewCell()
             }
             
-            let book = self.bookRepository.getBookTypes()[indexPath.section].books[indexPath.item]
+            let book = self.manager.getAllBooks()[indexPath.section].books[indexPath.item]
             
             cell.configure(with: book.image)
             cell.layer.cornerRadius = 10
@@ -258,13 +258,13 @@ private extension CollectionViewController {
                     withReuseIdentifier: SectionHeaderView.reuseIdentifier,
                     for: indexPath
                 ) as! SectionHeaderView
-                header.configure(
-                    text: self.bookRepository.getBookTypes()[indexPath.section].type)
+                let book = self.manager.getAllBooks()[indexPath.section].books[indexPath.item]
+                header.configure(text: book.title)
                 
                 return header
                 
             } else if kind == ElementKind.badge {
-                let book = self.bookRepository.getBookTypes()[indexPath.section].books[indexPath.item]
+                let book = self.manager.getAllBooks()[indexPath.section].books[indexPath.item]
                 let badge = collectionView.dequeueReusableSupplementaryView(
                     ofKind: kind,
                     withReuseIdentifier: BadgeView.reuseIdentifier,
@@ -285,7 +285,7 @@ private extension CollectionViewController {
                     withReuseIdentifier: TitleView.reuseIdentifier,
                     for: indexPath) as! TitleView
                 
-                let book = self.bookRepository.getBookTypes()[indexPath.section].books[indexPath.item]
+                let book = self.manager.getAllBooks()[indexPath.section].books[indexPath.item]
                 titleView.configure(text: book.title)
                 
                 return titleView
@@ -297,7 +297,7 @@ private extension CollectionViewController {
     func applyInitialData() {
         var snapshot = NSDiffableDataSourceSnapshot<BookType, Book>()
         
-        let sections = bookRepository.getBookTypes()
+        let sections = manager.getAllBooks()
         
         for bookType in sections {
             snapshot.appendSections([bookType])
