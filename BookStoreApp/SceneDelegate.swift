@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-        let tabBarController = TabBarController()
+        let tabBarController = TabBarController(tabBarItems: allTabBarItems)
         
         tabBarController.viewControllers?.enumerated().forEach { index, vc in
             guard let navVC = vc as? UINavigationController else { return }

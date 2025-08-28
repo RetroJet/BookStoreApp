@@ -29,7 +29,16 @@ enum TabBarItem {
 }
 
 class TabBarController: UITabBarController {
-    private let dataSource: [TabBarItem] = [.home, .search]
+    var dataSource: [TabBarItem]?
+    
+    init(tabBarItems: [TabBarItem]?) {
+        dataSource = tabBarItems
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,49 +54,39 @@ private extension TabBarController {
     }
     
     func buildTabBarComponents() {
-        let bookManager: IBookManager = BookManager()
-        
-        if bookManager.isEmpty() {
-            let bookRepository = BookRepository()
-            let books = bookRepository.getBookTypes()
-            bookManager.addBooks(books)
-        }
-        
-        viewControllers = dataSource.map {
-            switch $0 {
-            case .home:
-                let collectionVC = CollectionViewController(manager: bookManager)
-                return UINavigationController(rootViewController: collectionVC)
-            case .search:
-                return UINavigationController(rootViewController: MultipleSectionsViewController()
-                )
+            guard let dataSource else { return }
+            
+            viewControllers = dataSource.map {_ in
+                let navigationController = UINavigationController()
+                
+                return navigationController
+                
             }
         }
-    }
-    
-    func setupTapBar() {
-        let appearance = UITabBarAppearance()
         
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(red: 18/255, green: 18/255, blue: 18/255, alpha: 1)
-        
-        appearance.stackedLayoutAppearance.normal.iconColor = .gray
-        appearance.stackedLayoutAppearance.selected.iconColor = .white
-        
-        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
-            .foregroundColor: UIColor.gray
-        ]
-        
-        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [
-            .foregroundColor: UIColor.white
-        ]
-        
-        tabBar.standardAppearance = appearance
-        tabBar.scrollEdgeAppearance = appearance
-        
-        viewControllers?.enumerated().forEach { index, viewController in
-            viewController.tabBarItem.title = dataSource[index].title
-            viewController.tabBarItem.image = dataSource[index].icon
+        func setupTapBar() {
+            let appearance = UITabBarAppearance()
+            
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = UIColor(red: 18/255, green: 18/255, blue: 18/255, alpha: 1)
+            
+            appearance.stackedLayoutAppearance.normal.iconColor = .gray
+            appearance.stackedLayoutAppearance.selected.iconColor = .white
+            
+            appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
+                .foregroundColor: UIColor.gray
+            ]
+            
+            appearance.stackedLayoutAppearance.selected.titleTextAttributes = [
+                .foregroundColor: UIColor.white
+            ]
+            
+            tabBar.standardAppearance = appearance
+            tabBar.scrollEdgeAppearance = appearance
+            
+            viewControllers?.enumerated().forEach { index, viewController in
+                viewController.tabBarItem.title = dataSource?[index].title
+                viewController.tabBarItem.image = dataSource?[index].icon
+            }
         }
-    }
 }
