@@ -33,21 +33,8 @@ private extension MultipleSectionsViewController {
     }
     
     func setupNavigationBar() {
-        let appearance = UINavigationBarAppearance()
-        
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(red: 18/255, green: 18/255, blue: 18/255, alpha: 1)
-        
-        appearance.titleTextAttributes = [
-            .foregroundColor: UIColor.white
-        ]
-        
-        
         navigationItem.title = "Поиск"
-        
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
     func setupCollectionView() {
