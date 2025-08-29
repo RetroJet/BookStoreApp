@@ -46,16 +46,10 @@ private extension CollectionViewController {
     
     func setupNavigationBar() {
         let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(red: 18/255, green: 18/255, blue: 18/255, alpha: 1)
         
         appearance.largeTitleTextAttributes = [
             .foregroundColor: UIColor.white,
             .font: UIFont.systemFont(ofSize: 30, weight: .bold)
-        ]
-        
-        appearance.titleTextAttributes = [
-            .foregroundColor: UIColor.white
         ]
         
         let backItem = UIBarButtonItem()
