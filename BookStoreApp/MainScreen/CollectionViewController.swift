@@ -45,13 +45,6 @@ private extension CollectionViewController {
     }
     
     func setupNavigationBar() {
-        let appearance = UINavigationBarAppearance()
-        
-        appearance.largeTitleTextAttributes = [
-            .foregroundColor: UIColor.white,
-            .font: UIFont.systemFont(ofSize: 30, weight: .bold)
-        ]
-        
         let backItem = UIBarButtonItem()
         
         backItem.title = "Назад"
@@ -59,8 +52,6 @@ private extension CollectionViewController {
         navigationItem.title = "Книги для души"
         
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
     func setupCollectionView() {
