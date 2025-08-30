@@ -68,6 +68,11 @@ private extension TabBarController {
                     .foregroundColor: UIColor.white
                 ]
                 
+                appearance.largeTitleTextAttributes = [
+                    .foregroundColor: UIColor.white,
+                    .font: UIFont.systemFont(ofSize: 30, weight: .bold)
+                ]
+                
                 navigationController.navigationBar.standardAppearance = appearance
                 navigationController.navigationBar.scrollEdgeAppearance = appearance
                 
